@@ -1,0 +1,104 @@
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+import plotly.graph_objects as go
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv('https://raw.githubusercontent.com/ippaaaat/Abdullah-Ahmad-Iffat/main/dataippat')
+
+df = pd.DataFrame(df)
+
+# 4. Memisahkan fitur (X) dan target (Y)
+X = df[['X1', 'X2', 'X3', 'X4', 'X5']]
+y = df['Y']
+
+# 5. Membangun model regresi linier
+model = LinearRegression()
+model.fit(X, y)
+
+# 6. Menampilkan koefisien dan intercept dari model
+print("Koefisien: ", model.coef_)
+print("Intercept: ", model.intercept_)
+
+#Menampilkan tabel Summary
+
+# 3.Menambahkan kolom konstanta (intercept)
+df = sm.add_constant(df)
+
+# 4.Membentuk model regresi
+model = sm.OLS(df['Y'], df[['const', 'X1', 'X2', 'X3', 'X4', 'X5']])
+
+# 5.Melakukan fitting model
+results = model.fit()
+
+# 6. Menampilkan persamaan regresi
+print(results.summary())
+
+
+# MENAMPILKAN 3D MELALUI PLOTLY
+
+# Read data from a csv
+mus = pd.read_csv('https://raw.githubusercontent.com/ippaaaat/Abdullah-Ahmad-Iffat/main/dataippat')
+X = df[['X1', 'X2', 'X3', 'X4', 'X5']]
+y = df['Y']
+fig = go.Figure(data=[go.Surface(z=mus.values)])
+
+fig.update_layout(title='3d ippat', autosize=False,
+                  width=500, height=500,
+                  margin=dict(l=65, r=50, b=65, t=90))
+
+fig.show()
+
+
+#MENAMPILKAN 2D
+
+# Membaca data dari URL
+url = 'https://raw.githubusercontent.com/ippaaaat/Abdullah-Ahmad-Iffat/main/dataippat'
+df = pd.read_csv(url)
+
+# Memisahkan variabel
+X1 = df['X1']
+X2 = df['X2']
+X3 = df['X3']
+X4 = df['X4']
+X5 = df['X5']
+Y = df['Y']
+
+# Membangun model regresi linier untuk setiap variabel
+model_X1 = LinearRegression().fit(X1.values.reshape(-1, 1), Y)
+model_X2 = LinearRegression().fit(X2.values.reshape(-1, 1), Y)
+model_X3 = LinearRegression().fit(X3.values.reshape(-1, 1), Y)
+model_X4 = LinearRegression().fit(X4.values.reshape(-1, 1), Y)
+model_X5 = LinearRegression().fit(X5.values.reshape(-1, 1), Y)
+
+# Prediksi menggunakan model
+Y_pred_X1 = model_X1.predict(X1.values.reshape(-1, 1))
+Y_pred_X2 = model_X2.predict(X2.values.reshape(-1, 1))
+Y_pred_X3 = model_X3.predict(X3.values.reshape(-1, 1))
+Y_pred_X4 = model_X4.predict(X4.values.reshape(-1, 1))
+Y_pred_X5 = model_X5.predict(X5.values.reshape(-1, 1))
+
+# Plot 2D
+fig = go.Figure()
+
+# Scatter plot data as points
+fig.add_trace(go.Scatter(x=X1, y=Y, mode='markers', name='Data Points X1'))
+fig.add_trace(go.Scatter(x=X2, y=Y, mode='markers', name='Data Points X2'))
+fig.add_trace(go.Scatter(x=X3, y=Y, mode='markers', name='Data Points X3'))
+fig.add_trace(go.Scatter(x=X4, y=Y, mode='markers', name='Data Points X4'))
+fig.add_trace(go.Scatter(x=X5, y=Y, mode='markers', name='Data Points X5'))
+
+# Plot hasil prediksi sebagai garis
+fig.add_trace(go.Scatter(x=X1, y=Y_pred_X1, mode='lines', name='Regression Line X1'))
+fig.add_trace(go.Scatter(x=X2, y=Y_pred_X2, mode='lines', name='Regression Line X2'))
+fig.add_trace(go.Scatter(x=X3, y=Y_pred_X3, mode='lines', name='Regression Line X3'))
+fig.add_trace(go.Scatter(x=X4, y=Y_pred_X4, mode='lines', name='Regression Line X4'))
+fig.add_trace(go.Scatter(x=X5, y=Y_pred_X5, mode='lines', name='Regression Line X5'))
+
+fig.update_layout(
+    title='Regression Plot - Variabel X1 Hingga X5 vs Y',
+    xaxis_title='Variabel X1-X5',
+    yaxis_title='Y',
+)
+
+fig.show()
